@@ -1,0 +1,23 @@
+{
+  "name": "buyTickets",
+  "version": "0.0.1",
+  "description": "wash wash sleep",
+  "main": "index.js",
+  "dependencies": {
+    "cron": "^1.0.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/washwashsleep/buyTickets.git"
+  },
+  "author": "Simon Sun",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/washwashsleep/buyTickets/issues"
+  },
+  "homepage": "https://github.com/washwashsleep/buyTickets"
+}
