@@ -6,6 +6,8 @@ var async = require('async');
 var request = require('request');
 var jsdom = require('jsdom');
 var iconv = require('iconv-lite');
+var fs = require('fs');
+var http = require('http');
 
 var models = require('../models');
 var libs = require('../libs');
@@ -57,47 +59,49 @@ module.exports = function(next) {
 						},
 						form: tmpData
 					}, function(err, httpResponse, body) {
+
 						if (err) {
 							console.log(err);
 						}
 
+						var setCookie = httpResponse.headers['set-cookie'].join(';');
+						console.log(body);
 						var str = iconv.decode(new Buffer(body), "big5");
-						// console.log(str);
-						var imageUrl;
-						jsdom.env(
-						  str,
-						  ["http://code.jquery.com/jquery.js"],
-						  function (errors, window) {
-								window.$('noscript').text();
-								console.log(window.$('noscript').text());
-						  }
-						);
 
-						// console.log(body);
 						libs.captcha.credentials = {
 							username: 'SimonSun',
 							password: '19880118'
 						};
 
-						libs.captcha.decodeUrl('http://railway.hinet.net/ImageOut.jsp', 10000, function(err, result) {
-							console.log(result.text);
-				
-
-							var url = 'http://railway.hinet.net/order_no1.jsp?randInput=' + result.text + '&person_id=R123840258&getin_date=2014/12/06-13&from_station=100&to_station=185&order_qty_str=1&train_no=553&returnTicket=0';
-							console.log(url);
-							request({
-								url: url,
-								// url: 'http://railway.hinet.net/order_no1.jsp?randInput=' + result.text + '&person_id=R123840258&getin_date=2014/11/23-00&from_station=100&to_station=185&order_qty_str=1&train_no=181&returnTicket=0',
-								     // 'http://railway.hinet.net/ctno11.jsp?randInput=&person_id=R123840258&getin_date=103/12/05-12&from_station=100&to_station=185&order_qty_str=1&train_no=553&returnTicket=0'
-								encoding: null,
-								headers: {
-									referer: 'http://railway.hinet.net/check_ctno1.jsp'
-								}
-							},
-							function (err, res, body){
-								var str = iconv.decode(new Buffer(body), "big5");
-								console.log(str);
-							});
+						var file = fs.createWriteStream("file.jpg");
+						var getImage = http.get("http://railway.hinet.net/ImageOut.jsp", function(response) {
+						  response.pipe(file);
+						    file.on('finish', function() {
+						      file.close(function(){
+								libs.captcha.decodeFile('file.jpg', 10000, function(err, result) {
+									// console.log(result.text);
+									var url = 'http://railway.hinet.net/order_no1.jsp?randInput=' + result.text + '&person_id=R123840258&getin_date=2014/11/24-01&from_station=100&to_station=185&order_qty_str=1&train_no=553&returnTicket=0';
+									// console.log(url);
+									// console.log(typeof url);
+									request({
+										url: url,
+										encoding: null,
+										headers: {
+											referer: 'http://railway.hinet.net/check_ctno1.jsp',
+											cookie: setCookie
+										}
+									},
+									function (err, res, body){
+										if(err){
+											console.log(err);
+										}
+										// console.log(body);
+										var str = iconv.decode(new Buffer(body), "big5");
+										console.log(str);
+									});
+								});
+						      });  // close() is async, call cb after close completes.
+						    });
 						});
 					});
 
