@@ -8,6 +8,7 @@ var CronJob = require('cron').CronJob;
  * loaded models
  */
 var models = require('./models');
+var controllers = require('./controllers');
 
 /*
  * setting cron jobs
@@ -15,7 +16,13 @@ var models = require('./models');
 var job1 = new CronJob({
   cronTime: '*/5 * * * * *',
   onTick: function() {
-	console.log(models);
+	// console.log(models);
+	controllers.buy(function (err){
+		if(err){
+			console.log(err);
+			process.exit();
+		}
+	});
     return;
   },
   start: false,
@@ -37,7 +44,7 @@ var job2 = new CronJob({
  */
 var start = function (){
 	job1.start();
-	job2.start();
+	// job2.start();
 
 };
 
