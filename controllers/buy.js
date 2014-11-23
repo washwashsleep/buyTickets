@@ -65,7 +65,7 @@ module.exports = function(next) {
 						j.setCookie(request.cookie(cookie_string), 'http://railway.hinet.net');
 
 						console.log(cookie_string);
-						console.log('叫我第一名');
+						console.log('---------------------');
 
 						var str = iconv.decode(new Buffer(body), "big5");
 
@@ -97,9 +97,11 @@ module.exports = function(next) {
 												var QOO = j.getCookieString('http://railway.hinet.net');
 
 												console.log(QOO);
-												console.log('猴子去爬山');
+												// console.log('猴子去爬山');
+												console.log('---------------------');
 												var str = iconv.decode(new Buffer(body), "big5");
-												console.log(str);
+												// console.log(str);
+												console.log('======================= done ===================');
 												callback();
 											});
 									});
