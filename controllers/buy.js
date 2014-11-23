@@ -4,13 +4,9 @@
 
 var async = require('async');
 var request = require('request');
-var jsdom = require('jsdom');
 var iconv = require('iconv-lite');
 var fs = require('fs');
 var http = require('http');
-var cheerio = require('cheerio');
-var webshot = require('webshot');
-var tough = require('tough-cookie');
 
 var models = require('../models');
 var libs = require('../libs');
