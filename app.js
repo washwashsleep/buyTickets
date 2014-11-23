@@ -14,7 +14,7 @@ var controllers = require('./controllers');
  * setting cron jobs
  */
 var job1 = new CronJob({
-	cronTime: '*/20 * * * * *',
+	cronTime: '*/30 * * * * *',
 	onTick: function() {
 		controllers.buy(function(err) {
 			if (err) {
