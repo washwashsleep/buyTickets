@@ -15,15 +15,23 @@ var tough = require('tough-cookie');
 var models = require('../models');
 var libs = require('../libs');
 
+libs.captcha.credentials = {
+	username: 'SimonSun',
+	password: '19880118'
+};
+
 module.exports = function(next) {
 	async.waterfall([
 			function(cb) {
 				models.test.find().toArray(cb);
 			},
 			function(docs, cb) {
-				async.eachLimit(docs, 5, function(doc, callback) {
 
-					var j = request.jar();
+				var j = request.jar();
+				var cookie_string;
+
+				async.eachLimit(docs, 1, function(doc, callback) {
+
 					var tmpData = {
 						person_id: 'R123840258',
 						from_station: '100', // 台北,
@@ -53,63 +61,32 @@ module.exports = function(next) {
 							console.log(err);
 						}
 
-						var cookie_string = j.getCookieString('http://railway.hinet.net');
+						cookie_string = j.getCookieString('http://railway.hinet.net');
 						j.setCookie(request.cookie(cookie_string), 'http://railway.hinet.net');
 
-						var setCookie = httpResponse.headers['set-cookie'].join(';');
-						console.log(setCookie);
-						console.log('-------------------------');
+						console.log(cookie_string);
+						console.log('叫我第一名');
 
 						var str = iconv.decode(new Buffer(body), "big5");
-
-						libs.captcha.credentials = {
-							username: 'SimonSun',
-							password: '19880118'
-						};
-
-						// libs.captcha.decodeFile('hello_world.png', 3000, function(err, result) {
-						// 	console.log(result.text);
-
-						// 	var url = 'http://railway.hinet.net/order_no1.jsp?randInput=' + result.text + '&person_id=R123840258&getin_date=2014/11/24-01&from_station=100&to_station=185&order_qty_str=1&train_no=553&returnTicket=0';
-						// 	request({
-						// 			url: url,
-						// 			encoding: null,
-						// 			jar: j,
-						// 			headers: {
-						// 				referer: 'http://railway.hinet.net/check_ctno1.jsp',
-						// 				// cookie: cookies
-						// 			}
-						// 		},
-						// 		function(err, res, body) {
-						// 			if (err) {
-						// 				console.log(err);
-						// 			}
-
-						// 			var setQCookie = res.headers['set-cookie'].join(';');
-						// 			console.log(setQCookie);
-						// 			console.log('=======================');
-						// 			var str = iconv.decode(new Buffer(body), "big5");
-						// 			console.log(str);
-						// 		});
-						// });
-
 
 						var file = fs.createWriteStream("file.jpg");
 						var getImage = http.get("http://railway.hinet.net/ImageOut.jsp", function(response) {
 							response.pipe(file);
 							file.on('finish', function() {
 								file.close(function() {
-									libs.captcha.decodeFile('hello_world.png', 3000, function(err, result) {
+									libs.captcha.decodeFile('file.jpg', 3000, function(err, result) {
 										console.log(result.text);
 
 										var url = 'http://railway.hinet.net/order_no1.jsp?randInput=' + result.text + '&person_id=R123840258&getin_date=2014/11/24-01&from_station=100&to_station=185&order_qty_str=1&train_no=553&returnTicket=0';
+										console.log(cookie_string);
+										console.log('貳貳貳貳貳貳貳貳');
 										request({
 												url: url,
 												encoding: null,
 												jar: j,
 												headers: {
 													referer: 'http://railway.hinet.net/check_ctno1.jsp',
-													// cookie: cookies
+													cookie: cookie_string
 												}
 											},
 											function(err, res, body) {
@@ -117,19 +94,19 @@ module.exports = function(next) {
 													console.log(err);
 												}
 
-												var setQCookie = res.headers['set-cookie'].join(';');
-												console.log(setQCookie);
-												console.log('=======================');
+												var QOO = j.getCookieString('http://railway.hinet.net');
+
+												console.log(QOO);
+												console.log('猴子去爬山');
 												var str = iconv.decode(new Buffer(body), "big5");
 												console.log(str);
+												callback();
 											});
 									});
 								});
 							});
 						});
 					});
-
-					callback()
 				}, cb);
 			}
 		],
